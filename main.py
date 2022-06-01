@@ -3,6 +3,7 @@ from data import db_session, news_api
 from data.all import all
 from data.cat import cat
 from data.delivery import delivery
+import os
 
 
 app = Flask(__name__)
@@ -18,7 +19,8 @@ def logout():
 def main():
     db_session.global_init("db/users.db")
     app.register_blueprint(news_api.blueprint)
-    app.run(port=5000, host='127.0.0.1')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
     # db_sess = db_session.create_session()
     # user = delivery()
     # user.delivery = "Порог"
