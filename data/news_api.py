@@ -292,3 +292,24 @@ def get_info(category, position):
     fi2 = dict(fi2.position)[position]
     return jsonify({'info': fi2})
 
+
+@blueprint.route('/api/get_porog', methods=['GET'])
+def get_porog():
+    db_sess = db_session.create_session()
+    fi = db_sess.query(cat).filter(delivery.delivery == "Порог").first()
+    return jsonify({'porog': fi.cost})
+
+
+@blueprint.route('/api/get_samdelivery', methods=['GET'])
+def get_samdelivery():
+    db_sess = db_session.create_session()
+    fi = db_sess.query(cat).filter(delivery.delivery == "Самовывоз").first()
+    return jsonify({'samdelivery': fi.cost})
+
+
+@blueprint.route('/api/get_delivery', methods=['GET'])
+def get_delivery():
+    db_sess = db_session.create_session()
+    fi = db_sess.query(cat).filter(delivery.delivery == "Доставка").first()
+    return jsonify({'delivery': fi.cost})
+
