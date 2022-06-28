@@ -13,7 +13,7 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 @app.route('/')
 def logout():
-    return redirect("Вcё работает как шведцарские часы")
+    return "Вcё работает как шведцарские часы"
 
 
 def main():
