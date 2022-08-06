@@ -41,6 +41,11 @@ def category_new_post():
 @blueprint.route('/api/position_new_post', methods=['POST'])
 def position_new_post():
     db_sess = db_session.create_session()
+    e = req.json['category']
+    name = req.json['name']
+    photo = req.json['photo']
+    description = req.json['description']
+    cost = req.json['cost']
     try:
         e = req.json['category']
         name = req.json['name']
@@ -101,15 +106,18 @@ def position_correct_posit_photo_post():
     encoded = req.json['encoded']
     db_sess = db_session.create_session()
     fi2 = db_sess.query(all).filter(all.category == cat_old).first()
+    alll = dict(fi2.position)
     val = dict(fi2.position)[posit]['description']
     val1 = dict(fi2.position)[posit]['cost']
     news = db_sess.query(all).get(cat_old)
     db_sess.delete(news)
     db_sess.commit()
+    alll.pop(posit)
+    alll[posit] = {'photo': encoded, 'description': val, 'cost': val1}
 
     user = all()
     user.category = cat_old
-    user.position = {posit: {'photo': encoded, 'description': val, 'cost': val1}}
+    user.position = alll
     db_sess.add(user)
     db_sess.commit()
     return jsonify({'success': 'OK'})
@@ -122,15 +130,18 @@ def position_correct_posit_description_post():
     description = req.json['description']
     db_sess = db_session.create_session()
     fi2 = db_sess.query(all).filter(all.category == cat_old).first()
+    alll = dict(fi2.position)
     val = dict(fi2.position)[posit]['photo']
     val1 = dict(fi2.position)[posit]['cost']
     news = db_sess.query(all).get(cat_old)
     db_sess.delete(news)
     db_sess.commit()
+    alll.pop(posit)
+    alll[posit] = {'photo': val, 'description': description, 'cost': val1}
 
     user = all()
     user.category = cat_old
-    user.position = {posit: {'photo': val, 'description': description, 'cost': val1}}
+    user.position = alll
     db_sess.add(user)
     db_sess.commit()
     return jsonify({'success': 'OK'})
@@ -143,15 +154,18 @@ def position_correct_posit_cost_post():
     cost = req.json['cost']
     db_sess = db_session.create_session()
     fi2 = db_sess.query(all).filter(all.category == cat_old).first()
+    alll = dict(fi2.position)
     val = dict(fi2.position)[posit]['photo']
     val1 = dict(fi2.position)[posit]['description']
     news = db_sess.query(all).get(cat_old)
     db_sess.delete(news)
     db_sess.commit()
+    alll.pop(posit)
+    alll[posit] = {'photo': val, 'description': val1, 'cost': cost}
 
     user = all()
     user.category = cat_old
-    user.position = {posit: {'photo': val, 'description': val1, 'cost': cost}}
+    user.position = alll
     db_sess.add(user)
     db_sess.commit()
     return jsonify({'success': 'OK'})
@@ -163,6 +177,10 @@ def delete_category_post():
     fi = db_sess.query(cat).filter(cat.category_new == req.json['cat_old']).first()
     news = db_sess.query(cat).get(fi.category)
     db_sess.delete(news)
+    fi = db_sess.query(all).filter(all.category == req.json['cat_old']).first()
+    if fi:
+        news = db_sess.query(all).get(fi.category)
+        db_sess.delete(news)
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
