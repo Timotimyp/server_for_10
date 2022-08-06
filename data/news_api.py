@@ -29,7 +29,6 @@ def category_correct_pos():
 
 @blueprint.route('/api/category_new_post', methods=['POST'])
 def category_new_post():
-    print(type(req.json))
     user = cat()
     user.category = req.json['cat']
     user.category_new = req.json['cat_new']
@@ -80,13 +79,16 @@ def position_correct_posit_name_post():
     new_pos = req.json['new_pos']
     db_sess = db_session.create_session()
     fi2 = db_sess.query(all).filter(all.category == cat_old).first()
+    alll = dict(fi2.position)
     val = dict(fi2.position)[posit]
     news = db_sess.query(all).get(cat_old)
     db_sess.delete(news)
     db_sess.commit()
+    alll.pop(posit)
+    alll[new_pos] = val
     user = all()
     user.category = cat_old
-    user.position = {new_pos: val}
+    user.position = alll
     db_sess.add(user)
     db_sess.commit()
     return jsonify({'success': 'OK'})
@@ -312,4 +314,3 @@ def get_delivery():
     db_sess = db_session.create_session()
     fi = db_sess.query(delivery).filter(delivery.delivery == "Доставка").first()
     return jsonify({'delivery': fi.cost})
-
